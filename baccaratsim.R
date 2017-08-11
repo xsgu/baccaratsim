@@ -11,7 +11,7 @@ house_commission <- TRUE
 tie_payout <- 8
 
 # Pair payout: Usually 11 to 1
-pair_payout <- 11 # to be implemented later
+# pair_payout <- 11 # to be implemented later
 
 
 
@@ -152,7 +152,7 @@ payout <- function(winner,player_bet,house_bet,tie_bet,house_commission,tie_payo
     }
   }
   
-  # Pair payouts - to be implemented
+  # Pair payouts - to be implemented later
   
   return(payout)
 }
@@ -197,13 +197,6 @@ round <- function(player_bet,house_bet,tie_bet,house_commission,tie_payout) {
   return(winnings)
 }
 
-# Plays a single round of baccarat
-# Bets
-# player_bet <- 10
-# house_bet <- 0
-# tie_bet <- 0
-# round(player_bet,house_bet,tie_bet,house_commission,tie_payout)
-
 
 # Simulation
 simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,house_commission,tie_payout) {
@@ -226,10 +219,4 @@ simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,house_commission,
   return(balance)
 }
 
-# Simulates n rounds of baccarat
-player_bet <- 0
-house_bet <- 10
-tie_bet <- 0
-n <- 100
-open_bal <- 500
-simulation(n,open_bal,player_bet,house_bet,tie_bet,house_commission,tie_payout)
+
