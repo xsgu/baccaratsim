@@ -1,12 +1,18 @@
 # Baccarat Simulation
 
-A simulation of punto banco (North American style) baccarat.
+A simulation of punto banco (North American style) baccarat in R. Latest version tested on R 3.4.1 (2017-06-30).
+
+Features:
 
 1. Uses standard drawing and tableau rules.
-2. Can adjust the number of decks used (usually 6 to 8).
-3. Cut card is placed before the 7th card.
-4. Can turn on or off house commission for banker wins (set to 0.95). 
-5. Can adjust the payout for ties (usually pays 8:1 or 9:1).
+2. Allows standard bets (player, banker, tie), player/banker pair bets (wins when first two cards dealt are a pair), and an either pair bet (wins when either player or banker's first two cards dealt are a pair).)
+3. Tie pushes all player and banker bets.
+4. Cut card is placed before the 7th card.
+5. Can adjust the number of decks used (usually 6 to 8).
+6. Can turn on or off house commission for banker wins (commission set to 0.95). 
+7. Can adjust the payout for ties (usually pays 8:1 or 9:1).
+8. Can adjust the payout for pair bets (usually pays 11:1).
+9. Can adjust the payout for an either pair bet (usually pays 5:1).
 
 
 ## baccaratsim
@@ -50,5 +56,31 @@ The croupier will deal the cards according to the tableau and the croupier will 
 
 Should both Banker and Player have the same value at the end of the deal the croupier shall announce "égalité — tie bets win." All tie bets will be paid at 8-to-1 odds and all bets on Player or Banker remain in place and active for the next game (the customer may or may not be able to retract these bets depending on casino rules).
 
-## To be implemented at a later date
-* Player and banker pair bets (pays 11:1).
+## Expected mathematical returns
+*Credit to [The Wizard of Odds](https://wizardofodds.com/games/baccarat/basics/).*
+
+* Expected theoretical returns with 8 decks:
+  * Banker (no commission):  0.01235
+  * Banker (commission): -0.010579
+  * Player: -0.012351
+  * Player or banker pair (pays 11-to-1): -0.103614
+  * Either pair (pays 5-to-1) : -0.137099
+  * Tie bet (pays 8-to-1): -0.143596
+
+* Expected theoretical returns with 6 decks:
+  * Banker (no commission):  0.01237
+  * Banker (commission): -0.010558
+  * Player: -0.012374
+  * Player or banker pair (pays 11-to-1): -0.11254
+  * Either pair (pays 5-to-1) : -0.145365
+  * Tie bet (pays 8-to-1): -0.144382
+  
+## Release history
+
+### Version 1.0 (Macau)
+
+August 11, 2017
+
+Implemented basic game, drawing rules, house commission toggle, number of decks, tie payout, simulation plots.
+
+Tested on R version 3.3.2 (2016-10-31).

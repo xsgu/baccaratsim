@@ -11,12 +11,10 @@ house_commission <- TRUE
 tie_payout <- 8
 
 # Pair payout: Usually 11 to 1
-# pair_payout <- 11 # to be implemented later
+pair_payout <- 11
 
-
-
-
-
+# Either pair payout: Usually 5 to 1
+e_pair_payout <- 5
 
 # Create our deck
 cards <- c(rep(c("A","K","Q","J",10,9,8,7,6,5,4,3,2),4))
@@ -49,6 +47,16 @@ value_hand <- function(hand) {
     value <- value + value_card(i)
   }
   value <- value %% 10
+}
+
+# checks if a hand of 2 has a pair
+pairs <- function(hand) {
+  if (hand[[1]] == hand[[2]]) {
+    pair <- TRUE
+  } else {
+    pair <- FALSE
+  }
+  return(pair)
 }
 
 # draws a card
@@ -136,7 +144,7 @@ winner <- function(results) {
   return(winner)
 }
 
-# calculates the payout to player
+# calculates the payout to player (excluding pair bets)
 payout <- function(winner,player_bet,house_bet,tie_bet,house_commission,tie_payout) {
   
   # Winner payouts
@@ -151,23 +159,26 @@ payout <- function(winner,player_bet,house_bet,tie_bet,house_commission,tie_payo
       payout <- house_bet*2
     }
   }
-  
-  # Pair payouts - to be implemented later
+
   
   return(payout)
 }
 
 # One round of baccarat
-round <- function(player_bet,house_bet,tie_bet,house_commission,tie_payout) {
+round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout) {
   
   # Check if reshuffling is needed
   reshuffle()
   
   # Draw cards
-  p_hand <- draw_card()
-  p_hand <- c(p_hand, draw_card())
-  b_hand <- draw_card()
-  b_hand <- c(b_hand, draw_card())
+  p_hand <- draw_card() # player draws first
+  b_hand <- draw_card() # banker draws second
+  p_hand <- c(p_hand, draw_card()) # player draws next card
+  b_hand <- c(b_hand, draw_card()) # banker draws next card
+  
+  # Check for pairs
+  pair_p <- pairs(p_hand)
+  pair_b <- pairs(b_hand)
   
   # Value hands
   p_value <- value_hand(p_hand)
@@ -179,11 +190,31 @@ round <- function(player_bet,house_bet,tie_bet,house_commission,tie_payout) {
   # Calculates winner
   winner <- winner(play)
   
-  # Calculates winnings and profit
-  winnings <- payout(winner,player_bet,house_bet,tie_bet,house_commission,tie_payout)
-  profit <- winnings - player_bet - house_bet - tie_bet
+  # Calculates winnings
+  # If neither initial hand is a pair
+  if (pair_p == FALSE && pair_b == FALSE) {
+    winnings <- payout(winner,player_bet,house_bet,tie_bet,house_commission,tie_payout)
+  } 
+  # If we have at least one pair payout, check both
+  else {
+    if (pair_p) {
+      winnings <- payout(winner,player_bet,house_bet,tie_bet,house_commission,tie_payout) + pair_player_bet*(1+pair_payout)
+    }
+    if (pair_b) {
+      winnings <- payout(winner,player_bet,house_bet,tie_bet,house_commission,tie_payout) + pair_house_bet*(1+pair_payout)
+    }
+    # Either pair bet would also win
+    winnings <- winnings + pair_either_bet*(1+e_pair_payout)
+  }
+  
+  # Calculates profit on this round
+  profit <- winnings - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet
+  
   
   print(paste("Bet on player:",player_bet,"| Bet on banker:",house_bet,"| Bet on tie:",tie_bet))
+  if (pair_player_bet != 0 || pair_house_bet != 0 || pair_either_bet !=0 ) {
+    print(paste("Bet on player pair:",pair_player_bet,"| Bet on banker pair:",pair_house_bet,"| Bet on either pair:",pair_either_bet))
+  }
   print(paste("Player's hand:",paste(play[[1]], collapse=','),"| Value:",play[[3]]))
   print(paste("Banker's hand:",paste(play[[2]], collapse=','),"| Value:",play[[4]]))
   if (winner == 2){
@@ -193,23 +224,32 @@ round <- function(player_bet,house_bet,tie_bet,house_commission,tie_payout) {
   } else if (winner == 0) {
     print("Result: Banker wins")
   }
+  if (pair_either_bet != 0 && (pair_p | pair_b)) {
+    print("Either pair bet wins")
+  }
+  if (pair_player_bet != 0 && pair_p) {
+    print("Pair bet on player wins")
+  }
+  if (pair_house_bet != 0 && pair_b) {
+    print("Pair bet on banker wins")
+  }
   print(paste("Payout:",winnings,"| Profit/Loss:",profit))
   return(winnings)
 }
 
 
 # Simulation
-simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,house_commission,tie_payout) {
+simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout) {
   cash <- open_bal
   balance <- cash
   print("=========================================")
   print("Punto banco baccarat")
   print(paste("House commission:",house_commission,"| Tie payout:",tie_payout,"to 1"))
   for (i in 1:n) {
-    cash <- cash - player_bet - house_bet - tie_bet
+    cash <- cash - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet - pair_either_bet
     print("=========================================")
     print(paste("Game",i))
-    win <- round(player_bet,house_bet,tie_bet,house_commission,tie_payout)
+    win <- round(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout)
     cash <- cash + win
     balance <- c(balance, cash)
     print(paste("New cash balance:",cash))
