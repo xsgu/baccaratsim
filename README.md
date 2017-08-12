@@ -60,7 +60,6 @@ Should both Banker and Player have the same value at the end of the deal the cro
 *Credit to [The Wizard of Odds](https://wizardofodds.com/games/baccarat/basics/).*
 
 * Expected theoretical returns with 8 decks:
-  * Banker (no commission):  0.01235
   * Banker (commission): -0.010579
   * Player: -0.012351
   * Player or banker pair (pays 11-to-1): -0.103614
@@ -68,7 +67,6 @@ Should both Banker and Player have the same value at the end of the deal the cro
   * Tie bet (pays 8-to-1): -0.143596
 
 * Expected theoretical returns with 6 decks:
-  * Banker (no commission):  0.01237
   * Banker (commission): -0.010558
   * Player: -0.012374
   * Player or banker pair (pays 11-to-1): -0.11254
@@ -76,6 +74,17 @@ Should both Banker and Player have the same value at the end of the deal the cro
   * Tie bet (pays 8-to-1): -0.144382
   
 ## Release history
+
+### Version 2.0 (Atlantic City)
+
+August 12, 2017
+
+* Implemented support for player/banker pair and either pair side bets, as well as the ability to change the payout for these bets.
+* No commission or commission-free baccarat now correctly pays 1-to-2 (0.5-to-1) for winning banker hand with total six.
+* Summary statistics added at the end of *simulation()*.
+* Changed wording to better reflect actual baccarat nomenclature.
+
+Tested on R version 3.4.1 (2017-06-30).
 
 ### Version 1.0 (Macau)
 

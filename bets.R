@@ -15,20 +15,21 @@
 # Simulates n rounds of baccarat
 # Change the bets to your desired bet amounts.
 # player_bet <- 0
-# house_bet <- 0
+# house_bet <- 50
 # tie_bet <- 0
 # pair_player_bet <- 0
 # pair_house_bet <- 0
-# pair_either_bet <- 10
+# pair_either_bet <- 0
 # n <- 50
 # open_bal <- 5000
 # simulation(n,open_bal,player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout)
 
 
 # Let's see how the various types of bets work out
+# This simulation below runs n coups (i.e. hands) for each type of bet and charts the profit/loss as each coup progresses.
 # SETTINGS
 # ====== EDIT BELOW =====
-n <- 1000 
+n <- 1000
 open_bal <- 0  # set to 0 to see profit-loss chart, otherwise it acts like a starting cash balance
 tie_payout <- 8
 pair_payout <- 11
@@ -84,7 +85,7 @@ invisible(capture.output(p_e_sim <- simulation(n,open_bal,player_bet,house_bet,t
 # Plot
 ymin <- min(house_c_sim,house_no_c_sim,player_sim,tie_sim,pair_sim,p_e_sim)
 ymax <- max(house_c_sim,house_no_c_sim,player_sim,tie_sim,pair_sim,p_e_sim)
-plot(house_c_sim,type="l",lwd=2,col="red",ylab="Profit / Loss",xlab="Round",ylim=c(ymin,ymax), main="Simulation of various bets in punto banco baccarat")
+plot(house_c_sim,type="l",lwd=2,col="red",ylab="Profit / Loss",xlab="Coup",ylim=c(ymin,ymax), main="Simulation of various bets in punto banco baccarat")
 lines(house_no_c_sim,lwd=2,col="darkorange")
 lines(player_sim,lwd=2,col="blue")
 lines(tie_sim,lwd=2,col="forestgreen")

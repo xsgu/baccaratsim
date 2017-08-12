@@ -1,11 +1,12 @@
 # BACCARAT SIMULATION (PUNTO BANCO)
-
+# =======================================
 # SETTINGS
 # Number of decks: usually 6 to 8
 number_of_decks <- 8
 
-# Banker commission: if set to TRUE, 1-to-1 minus 5% commission to the house will be paid on banker wins, otherwise pays 1-to-1
-house_commission <- TRUE
+# Banker commission: if set to TRUE, this is standard punto banco where 19 to 20 is paid on banker wins (5% commission)
+# if set to FALSE this is Commission Free Baccarat or Nepal Bacarat where winning banker pays 1 to 1 except 1 to 2 on a winning total of six.
+house_commission <- FALSE
 
 # Tie payout: Usually 8 to 1 or 9 to 1 (set to 8 or 9)
 tie_payout <- 8
@@ -15,6 +16,8 @@ pair_payout <- 11
 
 # Either pair payout: Usually 5 to 1
 e_pair_payout <- 5
+# =======================================
+
 
 # Create our deck
 cards <- c(rep(c("A","K","Q","J",10,9,8,7,6,5,4,3,2),4))
@@ -132,14 +135,18 @@ tableau <- function(p_hand,b_hand,p_value,b_value) {
 }
 
 # calculates the winner
-winner <- function(results) {
-  # 0 = banker, 1 = player, 2 = tie
+winner <- function(results,house_commission) {
+  # 0 = banker, 1 = player, 2 = tie, 3 = banker wins with 6 (pays half on commission free baccarat)
   if (results[[3]] == results[[4]]) {
     winner <- 2
   } else if (results[[3]] > results[[4]]) {
     winner <- 1
   } else if (results[[4]] > results[[3]]) {
-    winner <- 0
+    if (results[[4]] == 6 && house_commission == FALSE) {
+      winner <- 3
+    } else {
+      winner <- 0
+    }
   }
   return(winner)
 }
@@ -158,6 +165,8 @@ payout <- function(winner,player_bet,house_bet,tie_bet,house_commission,tie_payo
     } else {
       payout <- house_bet*2
     }
+  } else if (winner == 3) {
+      payout <- house_bet*1.5
   }
 
   
@@ -188,7 +197,7 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
   play <- tableau(p_hand,b_hand,p_value,b_value) 
   
   # Calculates winner
-  winner <- winner(play)
+  winner <- winner(play,house_commission)
   
   # Calculates winnings
   # If neither initial hand is a pair
@@ -223,6 +232,8 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
     print("Result: Player wins")
   } else if (winner == 0) {
     print("Result: Banker wins")
+  } else if (winner == 3) {
+    print("Result: Banker wins with total six, pays 1 to 2")
   }
   if (pair_either_bet != 0 && (pair_p | pair_b)) {
     print("Either pair bet wins")
@@ -234,7 +245,8 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
     print("Pair bet on banker wins")
   }
   print(paste("Payout:",winnings,"| Profit/Loss:",profit))
-  return(winnings)
+  round_stats <- c(winnings, winner)
+  invisible(round_stats)
 }
 
 
@@ -242,21 +254,33 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
 simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout) {
   cash <- open_bal
   balance <- cash
+  player_wins <- 0
+  banker_wins <- 0
+  ties <- 0
   print("=========================================")
   print("Punto banco baccarat")
-  print(paste("House commission:",house_commission,"| Tie payout:",tie_payout,"to 1"))
+  print(paste("Commission:",house_commission,"| Tie payout:",tie_payout,"to 1"))
   for (i in 1:n) {
     cash <- cash - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet - pair_either_bet
     print("=========================================")
-    print(paste("Game",i))
+    print(paste("Coup",i))
     win <- round(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout)
-    cash <- cash + win
+    cash <- cash + win[[1]]
     balance <- c(balance, cash)
     print(paste("New cash balance:",cash))
+    if (win[[2]] == 0 || win[[2]] == 3) {
+      banker_wins <- banker_wins + 1
+    } else if (win[[2]] == 1) {
+      player_wins <- player_wins + 1
+    } else if (win[[2]] == 2) {
+      ties <- ties + 1
+    }
   }
   print("=========================================")
   print(paste("Final cash balance:",cash))
-  return(balance)
+  print(paste("Summary:",player_wins,"player wins,",banker_wins,"banker wins, and",ties,"ties."))
+  print("=========================================")
+  invisible(balance)
 }
 
 

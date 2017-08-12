@@ -1,6 +1,8 @@
 # This requires the baccaratsim.R file to be run first.
 
-# Histograms of various bets
+# Histogram and density plots of various bets
+# This code runs r simulations of n baccarat coups (i.e. hands) of all the different types of bets.
+# It tallies up the ending profit/loss for each simulation and displays it in a histogram or density plot.
 
 # SETTINGS
 # ====== EDIT BELOW =====
@@ -79,16 +81,16 @@ for (i in 1:r) {
   either_hist <- c(either_hist,tail(either_sim,n=1))
 }
 
-# If you want separate histograms
-par(mfrow=c(3,2))
-hist(house_c_hist, main="Banker (0.95-to-1)", xlab="Profit/Loss", col="red")
-hist(house_no_c_hist, main="Banker (1-to-1)", xlab="Profit/Loss", col="darkorange")
-hist(player_hist, main="Player (1-to-1)", xlab="Profit/Loss", col="blue")
-hist(tie_hist, main=paste0("Tie (",tie_payout,"-to-1)"), xlab="Profit/Loss", col="forestgreen")
-hist(pair_hist, main=paste0("Player pair (",pair_payout,"-to-1)"), xlab="Profit/Loss", col="purple")
-hist(either_hist, main=paste0("Either pair (",e_pair_payout,"-to-1)"), xlab="Profit/Loss", col="hotpink")
+# If you want separate histograms (uncomment the code)
+# par(mfrow=c(3,2))
+# hist(house_c_hist, main="Banker (0.95-to-1)", xlab="Profit/Loss", col="red")
+# hist(house_no_c_hist, main="Banker (1-to-1)", xlab="Profit/Loss", col="darkorange")
+# hist(player_hist, main="Player (1-to-1)", xlab="Profit/Loss", col="blue")
+# hist(tie_hist, main=paste0("Tie (",tie_payout,"-to-1)"), xlab="Profit/Loss", col="forestgreen")
+# hist(pair_hist, main=paste0("Player pair (",pair_payout,"-to-1)"), xlab="Profit/Loss", col="purple")
+# hist(either_hist, main=paste0("Either pair (",e_pair_payout,"-to-1)"), xlab="Profit/Loss", col="hotpink")
 
-# If you want one density plot
+# If you want one density plot (uncomment the code)
 par(mfrow=c(1,1))
 histmin <- min(house_c_hist,house_no_c_hist,player_hist,tie_hist,pair_hist,either_hist)
 histmax <- max(house_c_hist,house_no_c_hist,player_hist,tie_hist,pair_hist,either_hist)
