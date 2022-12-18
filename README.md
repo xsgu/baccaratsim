@@ -1,8 +1,10 @@
 # Baccarat Simulation
 
-A simulation of punto banco (North American style) baccarat in R. Latest version tested on R 3.4.1 (2017-06-30).
+A simulation of punto banco (North American style) baccarat in R. Latest version tested on R 4.2.2 (2022-10-31).
 
-Gameplay Features:
+## Introduction
+
+Gameplay features:
 
 1. Uses standard drawing and tableau rules.
 2. Allows standard bets (player, banker, tie), player/banker pair bets (wins when first two cards dealt are a pair), and an either pair bet (wins when either player or banker's first two cards dealt are a pair).)
@@ -15,7 +17,7 @@ Gameplay Features:
 9. Can adjust the payout for an either pair bet (usually pays 5:1).
 
 
-Code Features:
+Code features:
 1. The code does not use any R packages. It can be run on a base R installation.
 
 
@@ -35,7 +37,7 @@ Code Features:
 
 ## A brief explanation of punto banco baccarat
 
-*Credit to [Wikipedia](https://en.wikipedia.org/wiki/Baccarat_(card_game)#Punto_banco).*
+*Credit to [Wikipedia](https://en.wikipedia.org/wiki/Baccarat#Punto_banco).*
 
 In baccarat, cards have a point value: cards two through nine are worth face value (in points); tens, jacks, queens and kings have no point value (i.e. are worth zero); aces are worth 1 point; jokers are not used. Hands are valued according to the rightmost digit of the sum of their constituent cards. For example, a hand consisting of 2 and 3 is worth 5, but a hand consisting of 6 and 7 is worth 3 (i.e., the 3 being the rightmost digit in the combined points total of 13). The highest possible hand value in baccarat is therefore nine.
 

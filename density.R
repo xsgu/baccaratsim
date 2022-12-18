@@ -107,7 +107,7 @@ par(mfrow=c(1,1))
 histmin <- min(house_c_hist,house_no_c_hist,player_hist,tie_hist,pair_hist,either_hist)
 histmax <- max(house_c_hist,house_no_c_hist,player_hist,tie_hist,pair_hist,either_hist)
 
-png(filename = "sampleplots/density.png", width = 957, height = 796)
+png(filename = "sampleplots/density.png", width = 1280, height = 640)
 plot(density(house_c_hist), xlim=c(histmin,histmax), main="Density plot of various punto banco baccarat bets", xlab="Profit/Loss", ylab="Density", lwd=2, col="red")
 polygon(density(house_c_hist), col=rgb(1,0,0,0.2), border="red")
 lines(density(house_no_c_hist), lwd=2, col="darkorange")

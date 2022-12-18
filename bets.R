@@ -106,7 +106,7 @@ options("scipen" = 999)
 ymin <- min(house_c_sim,house_no_c_sim,player_sim,tie_sim,pair_sim,pair_house_sim,p_e_sim)
 ymax <- max(house_c_sim,house_no_c_sim,player_sim,tie_sim,pair_sim,pair_house_sim,p_e_sim)
 
-png(filename = "sampleplots/bets.png", width = 957, height = 796)
+png(filename = "sampleplots/bets.png", width = 1280, height = 640)
 plot(house_c_sim,type="l",lwd=2,col="red",ylab="Profit / Loss",xlab="Coup",ylim=c(ymin,ymax), main="Simulation of various bets in punto banco baccarat")
 lines(house_no_c_sim,lwd=2,col="darkorange")
 lines(player_sim,lwd=2,col="blue")
