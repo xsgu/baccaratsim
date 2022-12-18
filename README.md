@@ -79,7 +79,7 @@ Should both Banker and Player have the same value at the end of the deal the cro
   
 ## Release history
 
-### Version 2.1
+### Version 2.1 (Atlantic City)
 
 December 18, 2022
 
