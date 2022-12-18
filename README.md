@@ -2,12 +2,12 @@
 
 A simulation of punto banco (North American style) baccarat in R. Latest version tested on R 3.4.1 (2017-06-30).
 
-Features:
+Gameplay Features:
 
 1. Uses standard drawing and tableau rules.
 2. Allows standard bets (player, banker, tie), player/banker pair bets (wins when first two cards dealt are a pair), and an either pair bet (wins when either player or banker's first two cards dealt are a pair).)
 3. Tie pushes all player and banker bets.
-4. Cut card is placed before the 7th card.
+4. Cut card is placed in front of the 6th last card.
 5. Can adjust the number of decks used (usually 6 to 8).
 6. Can turn on or off house commission for banker wins (commission set to 0.95). 
 7. Can adjust the payout for ties (usually pays 8:1 or 9:1).
@@ -15,8 +15,12 @@ Features:
 9. Can adjust the payout for an either pair bet (usually pays 5:1).
 
 
+Code Features:
+1. The code does not use any R packages. It can be run on a base R installation.
+
+
 ## baccaratsim
-Contains all of the functions to run the baccarat simulation. Run this file first.
+1. Contains all of the functions to run the baccarat simulation. Run this file first.
 
 
 ## bets
@@ -26,10 +30,10 @@ Contains all of the functions to run the baccarat simulation. Run this file firs
 
 
 ## density
-Displays a histogram or density plot of the various types of bets.
+1. Simulates r sessions of n rounds of baccarat with a specific bet, and displays a histogram or density plot of the profit/loss at the end of each session.
 
 
-## An explanation of punto banco baccarat
+## A brief explanation of punto banco baccarat
 
 *Credit to [Wikipedia](https://en.wikipedia.org/wiki/Baccarat_(card_game)#Punto_banco).*
 
@@ -75,14 +79,23 @@ Should both Banker and Player have the same value at the end of the deal the cro
   
 ## Release history
 
+### Version 2.1
+
+December 18, 2022
+
+1. Fixed an issue in *simulation()* where the either pair bet was not being subtracted from the cash balance.
+2. *simulation()* now also returns a table of outcomes, showing the player cards dealt, banker cards dealt, player and banker card totals, and the outcome.
+
+Tested on R version 4.2.2 (2022-10-31).
+
 ### Version 2.0 (Atlantic City)
 
 August 12, 2017
 
-* Implemented support for player/banker pair and either pair side bets, as well as the ability to change the payout for these bets.
-* No commission or commission-free baccarat now correctly pays 1-to-2 (0.5-to-1) for winning banker hand with total six.
-* Summary statistics added at the end of *simulation()*.
-* Changed wording to better reflect actual baccarat nomenclature.
+1. Implemented support for player/banker pair and either pair side bets, as well as the ability to change the payout for these bets.
+2. No commission or commission-free baccarat now correctly pays 1-to-2 (0.5-to-1) for winning banker hand with total six.
+3. Summary statistics added at the end of *simulation()*.
+4. Changed wording to better reflect actual baccarat nomenclature.
 
 Tested on R version 3.4.1 (2017-06-30).
 
@@ -90,6 +103,6 @@ Tested on R version 3.4.1 (2017-06-30).
 
 August 11, 2017
 
-Implemented basic game, drawing rules, house commission toggle, number of decks, tie payout, simulation plots.
+1. Implemented basic game, drawing rules, house commission toggle, number of decks, tie payout, simulation plots.
 
 Tested on R version 3.3.2 (2016-10-31).

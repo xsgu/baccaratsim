@@ -4,7 +4,7 @@
 # Number of decks: usually 6 to 8
 number_of_decks <- 8
 
-# Banker commission: if set to TRUE, this is standard punto banco where 19 to 20 is paid on banker wins (5% commission)
+# Banker commission: if set to TRUE, this is standard punto banco where 19 to 20 is paid on banker wins (5% commission taken)
 # if set to FALSE this is Commission Free Baccarat or Nepal Bacarat where winning banker pays 1 to 1 except 1 to 2 on a winning total of six.
 house_commission <- FALSE
 
@@ -16,6 +16,7 @@ pair_payout <- 11
 
 # Either pair payout: Usually 5 to 1
 e_pair_payout <- 5
+
 # =======================================
 
 
@@ -76,7 +77,7 @@ draw_card <- function()
 # check if we need to reshuffle after each round
 reshuffle <- function()
 {
-  if (length(deck) < 7) { # cut card is placed in front of the seventh last card
+  if (length(deck) < 6) { # reshuffle when there are less than 6 cards
     deck <<- full_deck
   }
 }
@@ -217,9 +218,21 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
   }
   
   # Calculates profit on this round
-  profit <- winnings - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet
+  profit <- winnings - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet - pair_either_bet
   
+  # Store and return what the cards were
+  if(length(play[[1]]) == 2) {
+    round_cards <- c(play[[1]], NA)
+  } else {
+    round_cards <- play[[1]]
+  }
+  if(length(play[[2]]) == 2) {
+    round_cards <- c(round_cards, play[[2]], NA)
+  } else {
+    round_cards <- c(round_cards, play[[2]])
+  }
   
+  # Paste some summary statistics
   print(paste("Bet on player:",player_bet,"| Bet on banker:",house_bet,"| Bet on tie:",tie_bet))
   if (pair_player_bet != 0 || pair_house_bet != 0 || pair_either_bet !=0 ) {
     print(paste("Bet on player pair:",pair_player_bet,"| Bet on banker pair:",pair_house_bet,"| Bet on either pair:",pair_either_bet))
@@ -228,13 +241,25 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
   print(paste("Banker's hand:",paste(play[[2]], collapse=','),"| Value:",play[[4]]))
   if (winner == 2){
     print("Result: Tie")
+    winner_text <- "Tie"
   } else if (winner == 1) {
     print("Result: Player wins")
+    winner_text <- "Player"
   } else if (winner == 0) {
     print("Result: Banker wins")
+    winner_text <- "Banker"
   } else if (winner == 3) {
     print("Result: Banker wins with total six, pays 1 to 2")
+    winner_text <- "Banker"
   }
+  
+  pair_text <- "No pair"
+  if (pair_p) {
+    pair_text <- "Player pair"
+  } else if (pair_b) {
+    pair_text <- "Banker pair"
+  }
+  
   if (pair_either_bet != 0 && (pair_p | pair_b)) {
     print("Either pair bet wins")
   }
@@ -245,7 +270,9 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
     print("Pair bet on banker wins")
   }
   print(paste("Payout:",winnings,"| Profit/Loss:",profit))
-  round_stats <- c(winnings, winner)
+  
+  # Payout, winner (value), winner (text), whether a pair occurred or not, the player and bankers cards, the player value, the banker value
+  round_stats <- c(winnings, winner, winner_text, pair_text, round_cards, play[[3]], play[[4]])
   invisible(round_stats)
 }
 
@@ -257,30 +284,43 @@ simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,pair_player_bet,p
   player_wins <- 0
   banker_wins <- 0
   ties <- 0
+  
+  outcome_table <- as.data.frame(matrix(nrow = n, ncol = 11))
+  colnames(outcome_table) <- c("Coup", "Player card 1", "Player card 2", "Player card 3", "Banker card 1", "Banker card 2", "Banker card 3", "Player total", "Banker total", "Winner", "Pair outcome")  
+  
+  outcome_table$Coup <- seq(1, n)
+  
   print("=========================================")
   print("Punto banco baccarat")
   print(paste("Commission:",house_commission,"| Tie payout:",tie_payout,"to 1"))
+  print(paste("Player/banker pair payout:",pair_payout,"to 1","| Either pair payout:",e_pair_payout,"to 1"))
   for (i in 1:n) {
     cash <- cash - player_bet - house_bet - tie_bet - pair_player_bet - pair_house_bet - pair_either_bet
     print("=========================================")
     print(paste("Coup",i))
     win <- round(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout)
-    cash <- cash + win[[1]]
+    cash <- cash + as.numeric(win[1])
     balance <- c(balance, cash)
     print(paste("New cash balance:",cash))
-    if (win[[2]] == 0 || win[[2]] == 3) {
+    if (as.numeric(win[2]) == 0 || as.numeric(win[2]) == 3) {
       banker_wins <- banker_wins + 1
-    } else if (win[[2]] == 1) {
+    } else if (as.numeric(win[2]) == 1) {
       player_wins <- player_wins + 1
-    } else if (win[[2]] == 2) {
+    } else if (as.numeric(win[2]) == 2) {
       ties <- ties + 1
     }
+    
+    # Populate the table of outcomes
+    outcome_table[i,2:4] <- win[5:7]  # player cards
+    outcome_table[i,5:7] <- win[8:10] # banker cards
+    outcome_table[i,8:9] <- win[11:12] # player and banker total
+    outcome_table[i,10:11] <- win[3:4] # outcomes
   }
   print("=========================================")
   print(paste("Final cash balance:",cash))
   print(paste("Summary:",player_wins,"player wins,",banker_wins,"banker wins, and",ties,"ties."))
   print("=========================================")
-  invisible(balance)
+  invisible(list(balance, outcome_table))
 }
 
 
