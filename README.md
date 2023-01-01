@@ -35,6 +35,10 @@ Code features:
 1. Simulates r sessions of n rounds of baccarat with a specific bet, and displays a histogram or density plot of the profit/loss at the end of each session.
 
 
+## simulation_with_shoe
+1. Contains an alternative version of the *simulation()* function which keeps track of the shoe number.
+
+
 ## A brief explanation of punto banco baccarat
 
 *Credit to [Wikipedia](https://en.wikipedia.org/wiki/Baccarat#Punto_banco).*

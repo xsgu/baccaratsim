@@ -79,7 +79,11 @@ reshuffle <- function()
 {
   if (length(deck) < 6) { # reshuffle when there are less than 6 cards
     deck <<- full_deck
+    outcome <- 1
+  } else {
+    outcome <- 0
   }
+  invisible(outcome)
 }
 
 
@@ -178,7 +182,10 @@ payout <- function(winner,player_bet,house_bet,tie_bet,house_commission,tie_payo
 round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pair_either_bet,house_commission,tie_payout,pair_payout,e_pair_payout) {
   
   # Check if reshuffling is needed
-  reshuffle()
+  reshuffle_out <- reshuffle()
+  if (reshuffle_out == 1) {
+    print("Starting new shoe...")
+  }
   
   # Draw cards
   p_hand <- draw_card() # player draws first
@@ -254,7 +261,9 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
   }
   
   pair_text <- "No pair"
-  if (pair_p) {
+  if (pair_p && pair_b) {
+    pair_text <- "Player and banker pair"
+  } else if (pair_p) {
     pair_text <- "Player pair"
   } else if (pair_b) {
     pair_text <- "Banker pair"
@@ -271,8 +280,8 @@ round <- function(player_bet,house_bet,tie_bet,pair_player_bet,pair_house_bet,pa
   }
   print(paste("Payout:",winnings,"| Profit/Loss:",profit))
   
-  # Payout, winner (value), winner (text), whether a pair occurred or not, the player and bankers cards, the player value, the banker value
-  round_stats <- c(winnings, winner, winner_text, pair_text, round_cards, play[[3]], play[[4]])
+  # Payout, winner (value), winner (text), whether a pair occurred or not, the player and bankers cards, the player value, the banker value, whether the deck was reshuffled or not
+  round_stats <- c(winnings, winner, winner_text, pair_text, round_cards, play[[3]], play[[4]], reshuffle_out)
   invisible(round_stats)
 }
 
@@ -291,7 +300,7 @@ simulation <- function(n,open_bal,player_bet,house_bet,tie_bet,pair_player_bet,p
   outcome_table$Coup <- seq(1, n)
   
   print("=========================================")
-  print("Punto banco baccarat")
+  print("Punto banco baccarat simulation")
   print(paste("Commission:",house_commission,"| Tie payout:",tie_payout,"to 1"))
   print(paste("Player/banker pair payout:",pair_payout,"to 1","| Either pair payout:",e_pair_payout,"to 1"))
   for (i in 1:n) {
